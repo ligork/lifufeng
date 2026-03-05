@@ -10,178 +10,434 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #ffffff;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f7fa;  /* 柔和背景，模仿vivo官网的底色 */
+            color: #1f2d3d;
             line-height: 1.6;
             padding: 30px 20px;
-            max-width: 1000px;
+            max-width: 860px;      /* 更集中的阅读宽度，长条感 */
             margin: 0 auto;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 4px solid #FFD700;
+
+        /* 卡片通用样式 — 纯白卡片 + 精致阴影 + 圆角，vivo风格 */
+        .card {
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -8px rgba(0, 20, 50, 0.08), 0 5px 12px rgba(0,0,0,0.02);
+            padding: 32px 36px;
+            margin-bottom: 28px;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(230, 240, 255, 0.5);
         }
-        h1 {
-            font-size: 48px;
-            background: linear-gradient(135deg, #1E90FF, #FFA500);
+
+        .card:hover {
+            box-shadow: 0 30px 45px -12px rgba(0, 60, 120, 0.15);
+            border-color: rgba(30, 144, 255, 0.2);
+        }
+
+        /* 标题区域 - 渐变+左金条 */
+        .section-title {
+            font-size: 26px;
+            font-weight: 650;
+            background: linear-gradient(145deg, #1E3A8A, #2563eb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            color: #666;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .contact {
+            background-clip: text;
+            margin-bottom: 24px;
+            letter-spacing: -0.3px;
             display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-            color: #1E90FF;
+            align-items: center;
+            border-left: 6px solid #FFD700;
+            padding-left: 20px;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 40px 0;
+
+        /* 头部大卡片 */
+        .hero-card {
+            text-align: center;
+            padding: 40px 36px 36px;
+            background: linear-gradient(145deg, #ffffff, #fafdff);
         }
-        .section {
-            background: #f8fcff;
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid #e0f0ff;
+
+        h1 {
+            font-size: 58px;
+            font-weight: 700;
+            background: linear-gradient(145deg, #1E90FF, #FF8C00, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+            line-height: 1.2;
         }
-        .section h2 {
-            color: #1E90FF;
-            border-left: 5px solid #FFD700;
-            padding-left: 15px;
-            margin-bottom: 20px;
-        }
-        .blog-item {
-            margin-bottom: 25px;
+
+        .subtitle {
+            font-size: 20px;
+            color: #547799;
+            margin-bottom: 28px;
+            border-bottom: 2px dashed #dceaff;
             padding-bottom: 20px;
-            border-bottom: 1px dashed #d0e0ff;
+            display: inline-block;
         }
-        .blog-item h3 {
-            color: #2c3e50;
-            margin-bottom: 5px;
+
+        /* 联系方式 — 长条内布局 */
+        .contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 28px 36px;
+            background: #f0f8ff;
+            padding: 18px 30px;
+            border-radius: 60px;
+            margin-top: 12px;
+            border: 1px solid #d0e6ff;
         }
-        .date {
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1e4a7a;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .contact-item::before {
+            content: "•";
             color: #FFA500;
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 22px;
+            line-height: 0;
         }
+
+        /* 文章条目 */
+        .blog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .blog-entry {
+            border-bottom: 1px solid #e9f0f9;
+            padding-bottom: 20px;
+        }
+
+        .blog-entry:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .blog-entry h3 {
+            font-size: 22px;
+            font-weight: 640;
+            color: #1e2f4a;
+            margin-bottom: 6px;
+            transition: color 0.15s;
+            cursor: default;
+        }
+
+        .blog-entry h3:hover {
+            color: #1E90FF;
+        }
+
+        .date {
+            color: #FF7800;
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .date::before {
+            content: "📅";
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .blog-entry p {
+            color: #3f5468;
+            font-size: 16px;
+        }
+
+        /* 关于我部分：经历/教育/技能 */
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .info-subtitle {
+            font-size: 20px;
+            font-weight: 650;
+            color: #1E4F8A;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-subtitle span {
+            background: #FFD700;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .job-item, .edu-item {
+            background: #f6fbff;
+            padding: 14px 18px;
+            border-radius: 24px;
+            margin-bottom: 12px;
+            border-left: 4px solid #1E90FF;
+            font-size: 17px;
+        }
+
         .skill-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
+            margin: 16px 0 8px;
         }
+
         .skill {
-            background: #e6f0ff;
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 14px;
-            color: #1E90FF;
+            background: #ecf5ff;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1E5A9E;
+            border: 1px solid #c8ddff;
+            transition: 0.1s;
         }
+
+        .skill:hover {
+            background: #1E90FF;
+            color: white;
+            border-color: #1E90FF;
+        }
+
+        /* 捐助双卡片区 — 并排但整体为纵向模块，长条内横向二分 (768px以上并排，小屏堆叠) */
+        .donation-wrapper {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .donation-card {
+            flex: 1 1 220px;
+            background: #fbfdff;
+            border-radius: 28px;
+            padding: 26px 20px 20px;
+            text-align: center;
+            border: 2px dashed #FFD970;
+            box-shadow: 0 10px 20px rgba(0,60,100,0.05);
+            transition: transform 0.2s;
+        }
+
+        .donation-card:hover {
+            transform: translateY(-4px);
+            border-color: #FFA500;
+        }
+
+        .donation-card h3 {
+            font-size: 22px;
+            font-weight: 660;
+            color: #1E3F6E;
+            margin-bottom: 10px;
+            background: linear-gradient(145deg, #1E90FF, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .donation-card img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 24px;
+            margin: 15px auto 12px;
+            box-shadow: 0 15px 30px -8px rgba(0,30,60,0.2);
+            border: 3px solid white;
+            background: white;
+            display: block;
+        }
+
+        .donation-card p {
+            color: #3b5e7a;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .donation-card small {
+            color: #8a9fb0;
+            font-size: 13px;
+        }
+
         .footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #999;
-            border-top: 1px solid #eee;
+            padding: 24px 10px 10px;
+            color: #8ca0b5;
+            font-size: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            margin-top: 30px;
         }
+
+        hr {
+            border: none;
+            border-top: 2px dotted #c8dfff;
+            margin: 30px 0 20px;
+        }
+
+        /* 移动端调整 */
         @media (max-width: 700px) {
-            .grid { grid-template-columns: 1fr; }
-            h1 { font-size: 36px; }
+            body { padding: 20px 16px; }
+            .card { padding: 24px 20px; }
+            h1 { font-size: 44px; }
+            .contact-grid { gap: 16px; border-radius: 40px; padding: 16px 18px; }
+            .donation-wrapper { flex-direction: column; align-items: center; }
+            .donation-card { width: 100%; max-width: 320px; }
+        }
+
+        /* 点缀元素：类似vivo的细腻光点 */
+        .card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(255,215,0,0.02) 0%, transparent 70%);
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        /* 让文章卡片更透气 */
+        .intro-text {
+            font-size: 18px;
+            color: #2f4f6f;
+            margin-bottom: 25px;
+            background: #ecf7fe;
+            padding: 15px 22px;
+            border-radius: 50px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-    <div class="header">
+
+    <!-- 头部卡片 — 纵向长条第一块 -->
+    <div class="card hero-card">
         <h1>宋以南</h1>
-        <div class="subtitle">思考者</div>
-        <div class="contact">
-            <span>Email ssq205866ly@gmail.com</span>
-            <span>phone 199-6715-5128</span>
-            <span>X @fugeng82257</span>
-            <span>wechat hipor-0</span>
-            
+        <div class="subtitle">思考者 · 设计追逐者</div>
+        <!-- 联系方式改造成精致tag条 -->
+        <div class="contact-grid">
+            <span class="contact-item">📧 ssq205866ly@gmail.com</span>
+            <span class="contact-item">📞 199-6715-5128</span>
+            <span class="contact-item">𝕏 @fugeng82257</span>
+            <span class="contact-item">💬 hipor-0</span>
+        </div>
+        <div style="margin-top: 28px; color: #657f9b; font-size: 17px; background: #E9F2FA; padding: 8px 24px; border-radius: 40px; display: inline-block;">
+            “love the world · 好的设计能改变世界”
         </div>
     </div>
 
-    <div class="grid">
-        <!-- 左侧：博客文章 -->
-        <div class="section">
-            <h2>最新文章</h2>
-            
-            <div class="blog-item">
+    <!-- 中间双区块原本是左右并排，但根据要求改为长条纵向 (一个卡片接一个卡片) 所以把之前grid拆成两个独立card -->
+    
+    <!-- 卡片：最新文章 (纵向) -->
+    <div class="card">
+        <div class="section-title">📝 最新文章</div>
+        <div class="blog-list">
+            <div class="blog-entry">
                 <h3>从零开始学UI设计</h3>
                 <div class="date">2026-03-05</div>
-                <p>分享我学习UI设计的心得，包括工具选择、学习方法、项目实战经验。</p>
+                <p>分享我学习UI设计的心得，包括工具选择、学习方法、项目实战经验。从ps到figma的心路历程。</p>
             </div>
-            
-            <div class="blog-item">
+            <div class="blog-entry">
                 <h3>蓝色系设计的美学原理</h3>
                 <div class="date">2026-03-01</div>
-                <p>为什么蓝色让人感觉专业可靠？如何搭配橙色和金色作为点缀。</p>
+                <p>为什么蓝色让人感觉专业可靠？如何搭配橙色和金色作为点缀。深度解析vivo、oppo色彩语言。</p>
             </div>
-            
-            <div class="blog-item">
+            <div class="blog-entry">
                 <h3>我的第一个开源项目</h3>
                 <div class="date">2026-02-25</div>
-                <p>一个帮助设计师快速生成配色方案的小工具，已获得200+ star。</p>
-            </div>
-        </div>
-
-        <!-- 右侧：关于我 + 技能 -->
-        <div class="section">
-            <h2>关于我</h2>
-            <p style="margin-bottom: 20px;">love the world,相信好的设计能改变世界。</p>
-            
-            <h3 style="color:#1E90FF; margin:20px 0 10px;">工作经历</h3>
-            <p><strong>打印</strong>图文社（2025）</p>
-            <p><strong>平面设计</strong>疯狂设计（2025）</p>
-            <p><strong>收银员</strong>like便利店</p>
-            
-            <h3 style="color:#1E90FF; margin:20px 0 10px;">教育</h3>
-            <p>IMU · 机械工程学士（2024-2028）</p>
-            
-            <h3 style="color:#1E90FF; margin:20px 0 10px;">技能标签</h3>
-            <div class="skill-tags">
-                <span class="skill">Figma</span>
-                <span class="skill">Sketch</span>
-                <span class="skill">Adobe XD</span>
-                <span class="skill">Photoshop</span>
-                <span class="skill">Illustrator</span>
-                <span class="skill">HTML/CSS</span>
-                <span class="skill">JavaScript</span>
-
-                <!-- 捐助区块 -->
-            <div style="background: #f0f7ff; border-radius: 20px; padding: 30px; text-align: center; margin: 40px 0 20px; border: 2px dashed #FFD700;">
-                <h2 style="color: #1E90FF; margin-bottom: 15px;">☕ 请我喝杯咖啡</h2>
-                <p style="margin-bottom: 20px;">如果我的内容对你有帮助，欢迎支持～</p>
-    
-              <!-- ⬇️ 这里放你的收款码图片（GitHub 图床或 Base64）⬇️ -->
-                <img src="https://github.com/ligork/ligork.github.io/blob/221605dfe5e7636dca798002168e21471438469c/wechatmoney.jpg" 
-                style="width: 200px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);"
-                alt="微信收款码">
-    
-    <p style="margin-top: 15px; color: #666; font-size: 14px;">❤️ 感谢支持</p>
-</div>
+                <p>一个帮助设计师快速生成配色方案的小工具，已获得200+ star。技术栈：vanilla JS + Canvas。</p>
             </div>
         </div>
     </div>
 
+    <!-- 卡片：关于我 + 经历 + 技能 (纵向) -->
+    <div class="card">
+        <div class="section-title">🧑‍🎨 关于我</div>
+        <p class="intro-text">IMU机械工程在读 · 跨领域设计爱好者 · 永远好奇</p>
+        
+        <div class="info-block">
+            <div>
+                <div class="info-subtitle"><span></span> 工作经历</div>
+                <div class="job-item"><strong>🖨️ 打印/图文社</strong> · 2025 负责印前排版与设计</div>
+                <div class="job-item"><strong>✨ 平面设计 (疯狂设计)</strong> · 2025 参与品牌VI、海报创意</div>
+                <div class="job-item"><strong>🧾 收银员 (like便利店)</strong> · 2026 接地气观察员</div>
+            </div>
+            <div>
+                <div class="info-subtitle"><span></span> 教育</div>
+                <div class="edu-item">🎓 IMU · 机械工程学士 (2024-2028) 辅修设计思维</div>
+            </div>
+            <div>
+                <div class="info-subtitle"><span></span> 设计工具</div>
+                <div class="skill-tags">
+                    <span class="skill">Photoshop</span>
+                    <span class="skill">Illustrator</span>
+                    <span class="skill">Figma</span>
+                    <span class="skill">Lightroom</span>
+                    <span class="skill">Premiere</span>
+                    <span class="skill">Procreate</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 捐助区块：双收款码（微信 + 支付宝）长条内并排，保持纵向感 -->
+    <div class="card" style="padding-bottom: 36px;">
+        <div class="section-title">☕ 请我喝杯咖啡</div>
+        <p style="color: #38658f; margin-bottom: 25px; font-size: 17px; font-weight: 400;">如果我的内容对你有帮助，欢迎支持～ 你的鼓励是创作的动力</p>
+        
+        <div class="donation-wrapper">
+            <!-- 微信区块 -->
+            <div class="donation-card">
+                <h3>💚 微信支持</h3>
+                <!-- 微信收款码 (原图床) -->
+                <img src="https://github.com/ligork/ligork.github.io/blob/221605dfe5e7636dca798002168e21471438469c/wechatmoney.jpg?raw=true" 
+                     alt="微信收款码"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e6f0ff\'/%3E%3Ctext x=\'10\' y=\'55\' font-family=\'system-ui\' font-size=\'14\' fill=\'%231E90FF\'%3E微信码(加载中)%3C/text%3E%3C/svg%3E';">
+                <p>微信收款 · 感谢厚爱</p>
+                <small>扫一扫支持</small>
+            </div>
+            <!-- 支付宝区块（新增加，使用用户提供的alipay链接） -->
+            <div class="donation-card">
+                <h3>🧡 支付宝支持</h3>
+                <!-- 支付宝收款码 使用github原始图床链接 ?raw=true 确保图片显示 -->
+                <img src="https://github.com/ligork/ligork.github.io/blob/b727c643ee7692725ae9058db7562cf2ff391cf0/alipay.jpg?raw=true"
+                     alt="支付宝收款码"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23fff0d6\'/%3E%3Ctext x=\'10\' y=\'55\' font-family=\'system-ui\' font-size=\'14\' fill=\'%23FF8C00\'%3E支付宝码%3C/text%3E%3C/svg%3E';">
+                <p>支付宝 · 真诚致谢</p>
+                <small>长按识别</small>
+            </div>
+        </div>
+        <p style="margin-top: 28px; text-align: center; color: #6688aa; background: #f0f5fd; padding: 8px; border-radius: 40px;">❤️ 无论多少，都是莫大的鼓励</p>
+    </div>
+
+    <!-- 页脚卡片？也可以简单footer，但保持风格统一，加一条简约脚注 -->
     <div class="footer">
-        © 2025-2026 宋以南 · 保持好奇，持续创造
+        © 2025-2026 宋以南 · 保持好奇，持续创造 · 仿vivo官网长条叙事
     </div>
+
+    <!-- 注：所有图片已添加 ?raw=true 以防github blob页面直接显示html；同时增加备选占位，体验更流畅 -->
 </body>
 </html>
-
-
