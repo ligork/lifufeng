@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>火柴人射击 · 亮白版</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 24px;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 6px 12px rgba(0,0,0,0.05);
+            max-width: 700px;
+            width: 100%;
+        }
+        canvas {
+            background: #ffffff;
+            display: block;
+            margin: 0 auto;
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(0,0,0,0.05);
+            cursor: none;
+            width: 100%;
+            height: auto;
+        }
+        .info-panel {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f8fa;
+            padding: 12px 24px;
+            border-radius: 60px;
+            border: 1px solid #eee;
+        }
+        .score {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            background: white;
+            padding: 4px 20px;
+            border-radius: 40px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .restart-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #34495e;
+        }
+        .restart-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .controls {
+            margin-top: 16px;
+            color: #7f8c8d;
+            font-size: 15px;
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            background: #f8f8fa;
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid #eee;
+        }
+        .key {
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin: 0 4px;
+        }
+        .status {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        
+        <div class="info-panel">
+            <span class="score" id="scoreDisplay">0</span>
+            <span class="status">🎯 点击画面激活</span>
+            <button class="restart-btn" onclick="resetGame()">↻ 新游戏</button>
+        </div>
+        
+        <div class="controls">
+            <span><span class="key">←</span> <span class="key">→</span> 移动</span>
+            <span><span class="key">空格</span> 射击</span>
+            <span>⚡ +10分/个</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('scoreDisplay');
+
+        let gameRunning = true;
+        let score = 0;
+
+        let player = {
+            x: 300,
+            y: 340,
+            width: 20,
+            height: 40,
+            speed: 5,
+            color: '#3b82f6'
+        };
+
+        let bullets = [];
+        const bulletSpeed = 8;
+        const bulletWidth = 4;
+        const bulletHeight = 8;
+
+        let enemies = [];
+        const enemySpawnRate = 50;
+        let frameCounter = 0;
+
+        let leftPressed = false;
+        let rightPressed = false;
+        let spacePressed = false;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'Left' || e.key === 'a' || e.key === 'A') {
+                leftPressed = true;
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
+                rightPressed = true;
+                e.preventDefault();
+            }
+            if (e.key === ' ') {
+                spacePressed = true;
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'Left' || e.key === 'a' || e.key === 'A') {
+                leftPressed = false;
+            }
+            if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
+                rightPressed = false;
+            }
+            if (e.key === ' ') {
+                spacePressed = false;
+            }
+        });
+
+        function shoot() {
+            bullets.push({
+                x: player.x + player.width / 2 - bulletWidth / 2,
+                y: player.y - 15,
+                width: bulletWidth,
+                height: bulletHeight,
+                color: '#e74c3c'
+            });
+        }
+
+        function spawnEnemy() {
+            enemies.push({
+                x: Math.random() * (canvas.width - 30),
+                y: 0,
+                width: 20,
+                height: 30,
+                color: '#2c3e50',
+                speed: 1.2 + Math.random() * 2
+            });
+        }
+
+        function drawStickman(x, y, width, height, color, isPlayer = false) {
+            ctx.save();
+            ctx.translate(x + width/2, y + height/2);
+            
+            ctx.beginPath();
+            ctx.arc(0, -height/2 + 10, 9, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(-3, -height/2 + 7, 2, 0, Math.PI * 2);
+            ctx.arc(3, -height/2 + 7, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(-3, -height/2 + 7, 1, 0, Math.PI * 2);
+            ctx.arc(3, -height/2 + 7, 1, 0, Math.PI * 2);
+            ctx.fillStyle = '#2c3e50';
+            ctx.fill();
+            
+            if (isPlayer) {
+                ctx.beginPath();
+                ctx.arc(0, -height/2 + 13, 4, 0, Math.PI);
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+            
+            ctx.beginPath();
+            ctx.moveTo(0, -height/2 + 18);
+            ctx.lineTo(0, height/2 - 5);
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(0, height/2 - 5);
+            ctx.lineTo(-10, height/2 + 5);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, height/2 - 5);
+            ctx.lineTo(10, height/2 + 5);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(0, -5);
+            ctx.lineTo(-12, 5);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, -5);
+            ctx.lineTo(12, 5);
+            ctx.stroke();
+            
+            ctx.restore();
+            
+            if (isPlayer) {
+                ctx.fillStyle = '#95a5a6';
+                ctx.fillRect(x + width/2 - 2, y - 18, 4, 12);
+                ctx.fillStyle = '#7f8c8d';
+                ctx.fillRect(x + width/2 - 3, y - 20, 6, 4);
+            }
+        }
+
+        function update() {
+            if (!gameRunning) return;
+
+            if (leftPressed && player.x > 5) {
+                player.x -= player.speed;
+            }
+            if (rightPressed && player.x < canvas.width - player.width - 5) {
+                player.x += player.speed;
+            }
+
+            if (spacePressed) {
+                shoot();
+                spacePressed = false;
+            }
+
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                bullets[i].y -= bulletSpeed;
+                
+                if (bullets[i].y < 0) {
+                    bullets.splice(i, 1);
+                    continue;
+                }
+                
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    if (bullets[i] && 
+                        bullets[i].x < enemies[j].x + enemies[j].width &&
+                        bullets[i].x + bullets[i].width > enemies[j].x &&
+                        bullets[i].y < enemies[j].y + enemies[j].height &&
+                        bullets[i].y + bullets[i].height > enemies[j].y) {
+                        
+                        bullets.splice(i, 1);
+                        enemies.splice(j, 1);
+                        score += 10;
+                        scoreElement.innerText = score;
+                        break;
+                    }
+                }
+            }
+
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                enemies[i].y += enemies[i].speed;
+                
+                if (enemies[i].y + enemies[i].height > player.y + 10) {
+                    gameRunning = false;
+                    alert(`游戏结束！\n最终得分: ${score}`);
+                    break;
+                }
+                
+                if (enemies[i].y > canvas.height) {
+                    enemies.splice(i, 1);
+                }
+            }
+
+            frameCounter++;
+            if (frameCounter % enemySpawnRate === 0) {
+                spawnEnemy();
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.height; i += 30) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.strokeStyle = '#f5f5f5';
+                ctx.stroke();
+            }
+            
+            ctx.fillStyle = '#f8f8f8';
+            ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+            
+            drawStickman(player.x, player.y - 20, player.width, player.height, player.color, true);
+            
+            bullets.forEach(bullet => {
+                ctx.fillStyle = bullet.color;
+                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+            });
+            
+            enemies.forEach(enemy => {
+                drawStickman(enemy.x, enemy.y - 15, enemy.width, enemy.height, enemy.color);
+            });
+        }
+
+        function gameLoop() {
+            if (gameRunning) {
+                update();
+            }
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resetGame() {
+            gameRunning = true;
+            score = 0;
+            bullets = [];
+            enemies = [];
+            player.x = 300;
+            frameCounter = 0;
+            scoreElement.innerText = '0';
+        }
+
+        canvas.addEventListener('click', () => {
+            canvas.focus();
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
