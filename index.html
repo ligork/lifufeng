@@ -617,11 +617,10 @@
 
     </div> <!-- content-wrapper结束 -->
 
-    <!-- Live2D 看板娘 - 最高优先级 (优化版) -->
+<!-- Live2D 看板娘 - 正常显示 -->
 <script>
 window.L2DwidgetConfig = {
     model: {
-        // 当前是紫发小姐姐 (shizuku)，想换角色改这里就行
         jsonPath: 'https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json'
     },
     display: {
@@ -630,39 +629,15 @@ window.L2DwidgetConfig = {
         height: 240,
         hOffset: 20,
         vOffset: 150,
-        opacity: 1               // 完全不透明
+        opacity: 1
     },
     mobile: {
-        show: false              // 手机端隐藏
-    },
-    react: {
-        zIndex: 9999              // 优先级拉满
+        show: false
     }
 };
 </script>
 <script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
-
-<!-- 🚀 强制看板娘在最高层（加强版） -->
-<style>
-/* 覆盖所有可能的看板娘容器和画布 */
-#waifu,
-.waifu,
-div[id*="live2d"],
-div[class*="live2d"],
-canvas[id*="live2d"],
-canvas[class*="live2d"],
-#live2dcanvas {
-    z-index: 2147483647 !important; /* 使用浏览器允许的最大值 */
-    position: fixed !important;      /* 确保定位方式正确 */
-    pointer-events: none !important; /* 鼠标穿透，不挡按钮/文字 */
-}
-
-/* 如果上面不生效，再强制一下看板娘的父容器 */
-div:has(> #live2dcanvas) {
-    z-index: 2147483647 !important;
-    pointer-events: none !important;
-}
-</style>
 </body>
 </html>
+
 
