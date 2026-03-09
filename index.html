@@ -13,15 +13,23 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f5f7fa;  /* 柔和背景，模仿vivo官网的底色 */
+            background: #f5f7fa;
             color: #1f2d3d;
             line-height: 1.6;
-            padding: 30px 20px;
-            max-width: 860px;      /* 更集中的阅读宽度，长条感 */
-            margin: 0 auto;
+            padding: 30px 40px;
+            min-height: 100vh;
+            position: relative;
         }
 
-        /* 卡片通用样式 — 纯白卡片 + 精致阴影 + 圆角，vivo风格 */
+        /* 大屏幕适配 - 内容容器 */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 卡片通用样式 */
         .card {
             background: #ffffff;
             border-radius: 32px;
@@ -30,6 +38,9 @@
             margin-bottom: 28px;
             transition: all 0.2s ease;
             border: 1px solid rgba(230, 240, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
         }
 
         .card:hover {
@@ -37,7 +48,19 @@
             border-color: rgba(30, 144, 255, 0.2);
         }
 
-        /* 标题区域 - 渐变+左金条 */
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(255,215,0,0.02) 0%, transparent 70%);
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        /* 标题区域 */
         .section-title {
             font-size: 26px;
             font-weight: 650;
@@ -80,7 +103,7 @@
             display: inline-block;
         }
 
-        /* 联系方式 — 长条内布局 */
+        /* 联系方式 */
         .contact-grid {
             display: flex;
             flex-wrap: wrap;
@@ -161,7 +184,7 @@
             font-size: 16px;
         }
 
-        /* 关于我部分：经历/教育/技能 */
+        /* 关于我部分 */
         .info-block {
             display: flex;
             flex-direction: column;
@@ -219,7 +242,43 @@
             border-color: #1E90FF;
         }
 
-        /* 捐助双卡片区 — 并排但整体为纵向模块，长条内横向二分 (768px以上并排，小屏堆叠) */
+        /* 游戏区 - 全宽 */
+        .game-section {
+            margin: 40px 0;
+            width: 100%;
+        }
+
+        .game-section h2 {
+            color: #1E4F8A;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 32px;
+            padding: 25px;
+            box-shadow: 0 20px 35px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(230, 240, 255, 0.5);
+        }
+
+        .game-container iframe {
+            width: 100%;
+            height: 550px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 2px solid white;
+        }
+
+        .game-container p {
+            text-align: center;
+            color: #6688aa;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        /* 捐助双卡片区 */
         .donation-wrapper {
             display: flex;
             gap: 24px;
@@ -291,35 +350,6 @@
             margin: 30px 0 20px;
         }
 
-        /* 移动端调整 */
-        @media (max-width: 700px) {
-            body { padding: 20px 16px; }
-            .card { padding: 24px 20px; }
-            h1 { font-size: 44px; }
-            .contact-grid { gap: 16px; border-radius: 40px; padding: 16px 18px; }
-            .donation-wrapper { flex-direction: column; align-items: center; }
-            .donation-card { width: 100%; max-width: 320px; }
-        }
-
-        /* 点缀元素：类似vivo的细腻光点 */
-        .card {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            top: -20%;
-            right: -10%;
-            width: 160px;
-            height: 160px;
-            background: radial-gradient(circle, rgba(255,215,0,0.02) 0%, transparent 70%);
-            pointer-events: none;
-            border-radius: 50%;
-        }
-
-        /* 让文章卡片更透气 */
         .intro-text {
             font-size: 18px;
             color: #2f4f6f;
@@ -329,155 +359,283 @@
             border-radius: 50px;
             display: inline-block;
         }
+
+        /* ===== 两侧花藤效果 ===== */
+        .vine-left, .vine-right {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 180px;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 32px;
+            overflow: hidden;
+        }
+
+        .vine-left {
+            left: 0;
+            background: linear-gradient(to right, rgba(200,230,200,0.1), transparent);
+        }
+
+        .vine-right {
+            right: 0;
+            background: linear-gradient(to left, rgba(200,230,200,0.1), transparent);
+        }
+
+        /* 花藤上的元素 */
+        .vine-left div, .vine-right div {
+            animation: sway 6s ease-in-out infinite;
+            transform-origin: center;
+            text-shadow: 0 0 10px rgba(255,255,240,0.3);
+            margin: 10px 0;
+        }
+
+        /* 不同动画延迟 */
+        .vine-left .leaf1 { animation-delay: 0s; }
+        .vine-left .leaf2 { animation-delay: 0.8s; }
+        .vine-left .flower1 { animation-delay: 1.5s; font-size: 38px; }
+        .vine-left .leaf3 { animation-delay: 2.2s; }
+        .vine-left .flower2 { animation-delay: 2.8s; font-size: 38px; }
+        .vine-left .leaf4 { animation-delay: 3.5s; }
+
+        .vine-right .leaf1 { animation-delay: 0.3s; }
+        .vine-right .flower1 { animation-delay: 1.2s; font-size: 38px; }
+        .vine-right .leaf2 { animation-delay: 1.8s; }
+        .vine-right .leaf3 { animation-delay: 2.5s; }
+        .vine-right .flower2 { animation-delay: 3.2s; font-size: 38px; }
+        .vine-right .leaf4 { animation-delay: 4s; }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(0deg) translateX(0); }
+            25% { transform: rotate(4deg) translateX(3px); }
+            75% { transform: rotate(-4deg) translateX(-3px); }
+        }
+
+        /* 飘落的花瓣 */
+        .petal {
+            position: fixed;
+            font-size: 24px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 4;
+            animation: fall linear infinite;
+            filter: blur(0.3px);
+        }
+
+        .petal1 { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .petal2 { left: 25%; animation-duration: 15s; animation-delay: 2s; }
+        .petal3 { right: 15%; animation-duration: 18s; animation-delay: 4s; }
+        .petal4 { right: 30%; animation-duration: 14s; animation-delay: 1s; }
+        .petal5 { left: 40%; animation-duration: 16s; animation-delay: 5s; }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0.15;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0.05;
+            }
+        }
+
+        /* 手机隐藏花藤 */
+        @media (max-width: 1000px) {
+            .vine-left, .vine-right, .petal {
+                display: none;
+            }
+            body {
+                padding: 20px;
+            }
+        }
+
+        /* 大屏内容宽度 */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 移动端调整 */
+        @media (max-width: 700px) {
+            body { padding: 20px 16px; }
+            .card { padding: 24px 20px; }
+            h1 { font-size: 44px; }
+            .contact-grid { gap: 16px; border-radius: 40px; padding: 16px 18px; }
+            .donation-wrapper { flex-direction: column; align-items: center; }
+            .donation-card { width: 100%; max-width: 320px; }
+            .game-container iframe { height: 450px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- 头部卡片 — 纵向长条第一块 -->
-    <div class="card hero-card">
-        <h1>宋以南</h1>
-        <div class="subtitle">思考者 · 知识追逐者</div>
-        <!-- 联系方式改造成精致tag条 -->
-        <div class="contact-grid">
-            <span class="contact-item">📧 ssq205866ly@gmail.com</span>
-            <span class="contact-item">📞 199-6715-5128</span>
-            <span class="contact-item">𝕏 @fugeng82257</span>
-            <span class="contact-item">💬 hipor-0</span>
-        </div>
-        <div style="margin-top: 28px; color: #657f9b; font-size: 17px; background: #E9F2FA; padding: 8px 24px; border-radius: 40px; display: inline-block;">
-            “love the world · 好的想法能改变世界”
-        </div>
+    <!-- 两侧花藤 -->
+    <div class="vine-left">
+        <div class="leaf1">🌿</div>
+        <div class="leaf2">🌱</div>
+        <div class="flower1">🌸</div>
+        <div class="leaf3">🌿</div>
+        <div class="flower2">🌼</div>
+        <div class="leaf4">🌱</div>
+        <div class="leaf1">🍃</div>
+        <div class="flower1">🌷</div>
     </div>
 
-    <!-- 中间双区块原本是左右并排，但根据要求改为长条纵向 (一个卡片接一个卡片) 所以把之前grid拆成两个独立card -->
-    
-    <!-- 卡片：最新文章 (纵向) -->
-    <div class="card">
-        <div class="section-title">📝 最新文章</div>
-        <div class="blog-list">
-            <div class="blog-entry">
-                <h3>书中自有颜如玉，书中自有黄金屋</h3>
-                <div class="date">2026-03-05</div>
-                <p>自从开始阅读，对读书的蔑视感就消失了很多，也理解了曾经听过无数的话：书中自有颜如玉，书中自有黄金屋。</p>
-            </div>
-            <div class="blog-entry">
-                <h3>Eldering的游戏</h3>
-                <div class="date">2026-03-01</div>
-                <p>这个游戏很伟大，它让我克服了恐惧，拥有了权利！</p>
-            </div>
-            <div class="blog-entry">
-                <h3>我对战争与暴力的解读</h3>
-                <div class="date">2026-02-25</div>
-                <p>不要害怕冲突，因为那是不可避免的；不要在意别人的看法，因为有一天可能成为敌人。</p>
-            </div>
-        </div>
+    <div class="vine-right">
+        <div class="leaf1">🌿</div>
+        <div class="flower1">🌺</div>
+        <div class="leaf2">🌱</div>
+        <div class="leaf3">🌿</div>
+        <div class="flower2">🌹</div>
+        <div class="leaf4">🌱</div>
+        <div class="leaf1">🍃</div>
+        <div class="flower1">🌻</div>
     </div>
 
-    <!-- 卡片：关于我 + 经历 + 技能 (纵向) -->
-    <div class="card">
-        <div class="section-title">🧑‍🎨 关于我</div>
-        <p class="intro-text">IMU机械工程在读 · 跨领域科技爱好者 · 永远好奇</p>
-        
-        <div class="info-block">
-            <div>
-                <div class="info-subtitle"><span></span> 工作经历</div>
-                <div class="job-item"><strong>🖨️ 打印/图文社</strong> · 2025 负责印前排版与设计</div>
-                <div class="job-item"><strong>✨ 平面设计 (疯狂设计)</strong> · 2025 参与品牌VI、海报创意</div>
-                <div class="job-item"><strong>🧾 收银员 (like便利店)</strong> · 2026 接地气观察员</div>
+    <!-- 飘落花瓣 -->
+    <div class="petal petal1">🌸</div>
+    <div class="petal petal2">🌼</div>
+    <div class="petal petal3">🌷</div>
+    <div class="petal petal4">🌺</div>
+    <div class="petal petal5">🌿</div>
+
+    <!-- 内容容器 -->
+    <div class="content-wrapper">
+
+        <!-- 头部卡片 -->
+        <div class="card hero-card">
+            <h1>宋以南</h1>
+            <div class="subtitle">思考者 · 知识追逐者</div>
+            <div class="contact-grid">
+                <span class="contact-item">📧 ssq205866ly@gmail.com</span>
+                <span class="contact-item">📞 199-6715-5128</span>
+                <span class="contact-item">𝕏 @fugeng82257</span>
+                <span class="contact-item">💬 hipor-0</span>
             </div>
-            <div>
-                <div class="info-subtitle"><span></span> 教育</div>
-                <div class="edu-item">🎓 IMU · 机械工程学士 (2024-2028) </div>
+            <div style="margin-top: 28px; color: #657f9b; font-size: 17px; background: #E9F2FA; padding: 8px 24px; border-radius: 40px; display: inline-block;">
+                “love the world · 好的想法能改变世界”
             </div>
-            <div>
-                <div class="info-subtitle"><span></span> 设计工具</div>
-                <div class="skill-tags">
-                    <span class="skill">Photoshop</span>
-                    <span class="skill">Illustrator</span>
-                    <span class="skill">Figma</span>
-                    <span class="skill">Lightroom</span>
-                    <span class="skill">Premiere</span>
-                    <span class="skill">Procreate</span>
+        </div>
+
+        <!-- 最新文章 -->
+        <div class="card">
+            <div class="section-title">📝 最新文章</div>
+            <div class="blog-list">
+                <div class="blog-entry">
+                    <h3>书中自有颜如玉，书中自有黄金屋</h3>
+                    <div class="date">2026-03-05</div>
+                    <p>自从开始阅读，对读书的蔑视感就消失了很多，也理解了曾经听过无数的话：书中自有颜如玉，书中自有黄金屋。</p>
+                </div>
+                <div class="blog-entry">
+                    <h3>Eldering的游戏</h3>
+                    <div class="date">2026-03-01</div>
+                    <p>这个游戏很伟大，它让我克服了恐惧，拥有了权利！</p>
+                </div>
+                <div class="blog-entry">
+                    <h3>我对战争与暴力的解读</h3>
+                    <div class="date">2026-02-25</div>
+                    <p>不要害怕冲突，因为那是不可避免的；不要在意别人的看法，因为有一天可能成为敌人。</p>
                 </div>
             </div>
         </div>
-    </div>
-<!-- 射击游戏区 -->
-<div style="margin: 40px auto; max-width: 640px;">
-    <h2 style="color: #8b5a2b; text-align: center;">🎯 火柴人射击</h2>
-    <iframe src="shoot.html" 
-            width="100%" 
-            height="500px" 
-            frameborder="0"
-            style="border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
-    </iframe>
-    <p style="text-align: center; color: #6688aa;">←→移动，空格射击，打中红色火柴人+10分</p>
-</div>
-    <!-- 捐助区块：双收款码（微信 + 支付宝）长条内并排，保持纵向感 -->
-    <div class="card" style="padding-bottom: 36px;">
-        <div class="section-title">☕ 请我喝杯咖啡</div>
-        <p style="color: #38658f; margin-bottom: 25px; font-size: 17px; font-weight: 400;">如果我的内容对你有帮助，欢迎支持～ 你的鼓励是创作的动力</p>
-        
-        <div class="donation-wrapper">
-            <!-- 微信区块 -->
-            <div class="donation-card">
-                <h3>💚 微信支持</h3>
-                <!-- 微信收款码 (原图床) -->
-                <img src="https://github.com/ligork/ligork.github.io/blob/221605dfe5e7636dca798002168e21471438469c/wechatmoney.jpg?raw=true" 
-                     alt="微信收款码"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e6f0ff\'/%3E%3Ctext x=\'10\' y=\'55\' font-family=\'system-ui\' font-size=\'14\' fill=\'%231E90FF\'%3E微信码(加载中)%3C/text%3E%3C/svg%3E';">
-                <p>微信收款 · 感谢厚爱</p>
-                <small>扫一扫支持</small>
-            </div>
-            <!-- 支付宝区块（新增加，使用用户提供的alipay链接） -->
-            <div class="donation-card">
-                <h3>🧡 支付宝支持</h3>
-                <!-- 支付宝收款码 使用github原始图床链接 ?raw=true 确保图片显示 -->
-                <img src="https://github.com/ligork/ligork.github.io/blob/b727c643ee7692725ae9058db7562cf2ff391cf0/alipay.jpg?raw=true"
-                     alt="支付宝收款码"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23fff0d6\'/%3E%3Ctext x=\'10\' y=\'55\' font-family=\'system-ui\' font-size=\'14\' fill=\'%23FF8C00\'%3E支付宝码%3C/text%3E%3C/svg%3E';">
-                <p>支付宝 · 真诚致谢</p>
-                <small>长按识别</small>
+
+        <!-- 关于我 -->
+        <div class="card">
+            <div class="section-title">🧑‍🎨 关于我</div>
+            <p class="intro-text">IMU机械工程在读 · 跨领域科技爱好者 · 永远好奇</p>
+            
+            <div class="info-block">
+                <div>
+                    <div class="info-subtitle"><span></span> 工作经历</div>
+                    <div class="job-item"><strong>🖨️ 打印/图文社</strong> · 2025 负责印前排版与设计</div>
+                    <div class="job-item"><strong>✨ 平面设计 (疯狂设计)</strong> · 2025 参与品牌VI、海报创意</div>
+                    <div class="job-item"><strong>🧾 收银员 (like便利店)</strong> · 2026 接地气观察员</div>
+                </div>
+                <div>
+                    <div class="info-subtitle"><span></span> 教育</div>
+                    <div class="edu-item">🎓 IMU · 机械工程学士 (2024-2028) </div>
+                </div>
+                <div>
+                    <div class="info-subtitle"><span></span> 设计工具</div>
+                    <div class="skill-tags">
+                        <span class="skill">Photoshop</span>
+                        <span class="skill">Illustrator</span>
+                        <span class="skill">Figma</span>
+                        <span class="skill">Lightroom</span>
+                        <span class="skill">Premiere</span>
+                        <span class="skill">Procreate</span>
+                    </div>
+                </div>
             </div>
         </div>
-        <p style="margin-top: 28px; text-align: center; color: #6688aa; background: #f0f5fd; padding: 8px; border-radius: 40px;">❤️ 无论多少，都是莫大的鼓励</p>
-    </div>
 
-    <!-- 页脚卡片？也可以简单footer，但保持风格统一，加一条简约脚注 -->
-    <div class="footer">
-    © 2025-2026 宋以南 · 保持乐趣，持续创造
-</div>
+        <!-- 游戏区 - 全宽版 -->
+        <div class="game-section">
+            <h2>🎯 火柴人射击 · 横版</h2>
+            <div class="game-container">
+                <iframe src="shoot.html" frameborder="0"></iframe>
+                <p>W/S 上下移动 | 空格射击 | 击中敌人 +10分</p>
+            </div>
+        </div>
 
-<!-- Live2D 看板娘 - 强制小尺寸版 -->
-<script>
-// 先定义配置
-window.live2d_settings = {
-    modelId: 1,
-    modelTexturesId: 1,
-    width: 90,           // 强制宽度
-    height: 180,         // 强制高度
-    position: 'right',
-    hOffset: 10,
-    vOffset: 10,
-    opacity: 0.9,
-    mobile: false
-};
+        <!-- 捐助区块 -->
+        <div class="card" style="padding-bottom: 36px;">
+            <div class="section-title">☕ 请我喝杯咖啡</div>
+            <p style="color: #38658f; margin-bottom: 25px; font-size: 17px; font-weight: 400;">如果我的内容对你有帮助，欢迎支持～ 你的鼓励是创作的动力</p>
+            
+            <div class="donation-wrapper">
+                <div class="donation-card">
+                    <h3>💚 微信支持</h3>
+                    <img src="https://github.com/ligork/ligork.github.io/blob/221605dfe5e7636dca798002168e21471438469c/wechatmoney.jpg?raw=true" 
+                         alt="微信收款码"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e6f0ff\'/%3E%3Ctext x=\'10\' y=\'55\' font-family=\'system-ui\' font-size=\'14\' fill=\'%231E90FF\'%3E微信码(加载中)%3C/text%3E%3C/svg%3E';">
+                    <p>微信收款 · 感谢厚爱</p>
+                    <small>扫一扫支持</small>
+                </div>
+                <div class="donation-card">
+                    <h3>🧡 支付宝支持</h3>
+                    <img src="https://github.com/ligork/ligork.github.io/blob/b727c643ee7692725ae9058db7562cf2ff391cf0/alipay.jpg?raw=true"
+                         alt="支付宝收款码"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23fff0d6\'/%3E%3Ctext x=\'10\' y=\'55\' font-family=\'system-ui\' font-size=\'14\' fill=\'%23FF8C00\'%3E支付宝码%3C/text%3E%3C/svg%3E';">
+                    <p>支付宝 · 真诚致谢</p>
+                    <small>长按识别</small>
+                </div>
+            </div>
+            <p style="margin-top: 28px; text-align: center; color: #6688aa; background: #f0f5fd; padding: 8px; border-radius: 40px;">❤️ 无论多少，都是莫大的鼓励</p>
+        </div>
 
-// 再加载脚本
-(function() {
-    var script = document.createElement('script');
-    script.src = 'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js';
-    document.body.appendChild(script);
-})();
-</script>
+        <!-- 页脚 -->
+        <div class="footer">
+            © 2025-2026 宋以南 · 保持乐趣，持续创造
+        </div>
+
+    </div> <!-- content-wrapper结束 -->
+
+    <!-- Live2D 看板娘 -->
+    <script>
+        window.live2d_settings = {
+            modelId: 1,
+            modelTexturesId: 1,
+            width: 90,
+            height: 180,
+            position: 'right',
+            hOffset: 10,
+            vOffset: 10,
+            opacity: 0.9,
+            mobile: false
+        };
+
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js';
+            document.body.appendChild(script);
+        })();
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
