@@ -438,29 +438,31 @@
     © 2025-2026 宋以南 · 保持乐趣，持续创造
 </div>
 
-<!-- Live2D 看板娘 - 经典款shizuku 小巧版 -->
+<!-- Live2D 看板娘 - 强制小尺寸版 -->
 <script>
-window.L2DwidgetConfig = {
-    model: {
-        // 经典紫发小姐姐 - 最多人用的款式
-        jsonPath: 'https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json'
-    },
-    display: {
-        position: 'right',      // 放在右下角
-        width: 90,              // 宽度90像素（小巧）
-        height: 180,            // 高度180像素（小巧）
-        hOffset: 10,            // 离右边稍微远一点点
-        vOffset: 10,            // 离下边稍微远一点点
-        opacity: 0.9            // 稍微有点透明，不挡内容
-    },
-    mobile: {
-        show: false             // 手机不显示
-    }
+// 先定义配置
+window.live2d_settings = {
+    modelId: 1,
+    modelTexturesId: 1,
+    width: 90,           // 强制宽度
+    height: 180,         // 强制高度
+    position: 'right',
+    hOffset: 10,
+    vOffset: 10,
+    opacity: 0.9,
+    mobile: false
 };
+
+// 再加载脚本
+(function() {
+    var script = document.createElement('script');
+    script.src = 'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js';
+    document.body.appendChild(script);
+})();
 </script>
-<script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
 </body>
 </html>
+
 
 
 
