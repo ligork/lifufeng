@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>火柴人射击 · 亮白版</title>
+    <title>火柴人射击 · 横版</title>
     <style>
         body {
             margin: 0;
@@ -19,8 +19,8 @@
             background: white;
             padding: 24px;
             border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 6px 12px rgba(0,0,0,0.05);
-            max-width: 700px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            max-width: 800px;
             width: 100%;
         }
         canvas {
@@ -50,7 +50,6 @@
             background: white;
             padding: 4px 20px;
             border-radius: 40px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
         }
         .restart-btn {
             background: #2c3e50;
@@ -59,15 +58,12 @@
             padding: 10px 30px;
             border-radius: 40px;
             font-size: 16px;
-            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid #34495e;
         }
         .restart-btn:hover {
             background: #34495e;
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
         }
         .controls {
             margin-top: 16px;
@@ -79,7 +75,6 @@
             background: #f8f8fa;
             padding: 10px 20px;
             border-radius: 40px;
-            border: 1px solid #eee;
         }
         .key {
             background: white;
@@ -90,15 +85,11 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             margin: 0 4px;
         }
-        .status {
-            color: #7f8c8d;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        <canvas id="gameCanvas" width="700" height="400"></canvas>
         
         <div class="info-panel">
             <span class="score" id="scoreDisplay">0</span>
@@ -107,7 +98,7 @@
         </div>
         
         <div class="controls">
-            <span><span class="key">←</span> <span class="key">→</span> 移动</span>
+            <span><span class="key">W</span> <span class="key">S</span> 上下移动</span>
             <span><span class="key">空格</span> 射击</span>
             <span>⚡ +10分/个</span>
         </div>
@@ -118,38 +109,43 @@
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('scoreDisplay');
 
+        // 游戏状态
         let gameRunning = true;
         let score = 0;
 
+        // 玩家火柴人（站在左边）
         let player = {
-            x: 300,
-            y: 340,
+            x: 80,
+            y: 200,
             width: 20,
             height: 40,
-            speed: 5,
+            speed: 4,
             color: '#3b82f6'
         };
 
+        // 子弹
         let bullets = [];
-        const bulletSpeed = 8;
-        const bulletWidth = 4;
-        const bulletHeight = 8;
+        const bulletSpeed = 7;
+        const bulletSize = 6;
 
+        // 敌人（从右边走来）
         let enemies = [];
-        const enemySpawnRate = 50;
+        const enemySpawnRate = 60;
         let frameCounter = 0;
 
-        let leftPressed = false;
-        let rightPressed = false;
+        // 键盘控制
+        let wPressed = false;
+        let sPressed = false;
         let spacePressed = false;
 
+        // 键盘事件
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'Left' || e.key === 'a' || e.key === 'A') {
-                leftPressed = true;
+            if (e.key === 'w' || e.key === 'W') {
+                wPressed = true;
                 e.preventDefault();
             }
-            if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
-                rightPressed = true;
+            if (e.key === 's' || e.key === 'S') {
+                sPressed = true;
                 e.preventDefault();
             }
             if (e.key === ' ') {
@@ -159,42 +155,46 @@
         });
 
         document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'Left' || e.key === 'a' || e.key === 'A') {
-                leftPressed = false;
+            if (e.key === 'w' || e.key === 'W') {
+                wPressed = false;
             }
-            if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
-                rightPressed = false;
+            if (e.key === 's' || e.key === 'S') {
+                sPressed = false;
             }
             if (e.key === ' ') {
                 spacePressed = false;
             }
         });
 
+        // 射击
         function shoot() {
             bullets.push({
-                x: player.x + player.width / 2 - bulletWidth / 2,
-                y: player.y - 15,
-                width: bulletWidth,
-                height: bulletHeight,
+                x: player.x + player.width + 5,
+                y: player.y + player.height/2 - bulletSize/2,
+                size: bulletSize,
                 color: '#e74c3c'
             });
         }
 
+        // 生成敌人
         function spawnEnemy() {
             enemies.push({
-                x: Math.random() * (canvas.width - 30),
-                y: 0,
+                x: canvas.width - 80,
+                y: 40 + Math.random() * (canvas.height - 100),
                 width: 20,
-                height: 30,
+                height: 40,
                 color: '#2c3e50',
-                speed: 1.2 + Math.random() * 2
+                speed: 1.5 + Math.random() * 2,
+                direction: -1 // 向左走
             });
         }
 
+        // 画火柴人
         function drawStickman(x, y, width, height, color, isPlayer = false) {
             ctx.save();
             ctx.translate(x + width/2, y + height/2);
             
+            // 头
             ctx.beginPath();
             ctx.arc(0, -height/2 + 10, 9, 0, Math.PI * 2);
             ctx.fillStyle = color;
@@ -203,6 +203,7 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
             
+            // 眼睛
             ctx.beginPath();
             ctx.arc(-3, -height/2 + 7, 2, 0, Math.PI * 2);
             ctx.arc(3, -height/2 + 7, 2, 0, Math.PI * 2);
@@ -214,14 +215,7 @@
             ctx.fillStyle = '#2c3e50';
             ctx.fill();
             
-            if (isPlayer) {
-                ctx.beginPath();
-                ctx.arc(0, -height/2 + 13, 4, 0, Math.PI);
-                ctx.strokeStyle = '#2c3e50';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-            }
-            
+            // 身体
             ctx.beginPath();
             ctx.moveTo(0, -height/2 + 18);
             ctx.lineTo(0, height/2 - 5);
@@ -229,6 +223,7 @@
             ctx.lineWidth = 2.5;
             ctx.stroke();
             
+            // 腿
             ctx.beginPath();
             ctx.moveTo(0, height/2 - 5);
             ctx.lineTo(-10, height/2 + 5);
@@ -238,6 +233,7 @@
             ctx.lineTo(10, height/2 + 5);
             ctx.stroke();
             
+            // 手臂
             ctx.beginPath();
             ctx.moveTo(0, -5);
             ctx.lineTo(-12, 5);
@@ -249,33 +245,37 @@
             
             ctx.restore();
             
+            // 玩家拿枪
             if (isPlayer) {
                 ctx.fillStyle = '#95a5a6';
-                ctx.fillRect(x + width/2 - 2, y - 18, 4, 12);
+                ctx.fillRect(x + width - 2, y + height/2 - 3, 18, 6);
                 ctx.fillStyle = '#7f8c8d';
-                ctx.fillRect(x + width/2 - 3, y - 20, 6, 4);
+                ctx.fillRect(x + width + 12, y + height/2 - 4, 6, 8);
             }
         }
 
         function update() {
             if (!gameRunning) return;
 
-            if (leftPressed && player.x > 5) {
-                player.x -= player.speed;
+            // 玩家上下移动
+            if (wPressed && player.y > 20) {
+                player.y -= player.speed;
             }
-            if (rightPressed && player.x < canvas.width - player.width - 5) {
-                player.x += player.speed;
+            if (sPressed && player.y < canvas.height - player.height - 20) {
+                player.y += player.speed;
             }
 
+            // 射击
             if (spacePressed) {
                 shoot();
                 spacePressed = false;
             }
 
+            // 子弹移动
             for (let i = bullets.length - 1; i >= 0; i--) {
-                bullets[i].y -= bulletSpeed;
+                bullets[i].x += bulletSpeed;
                 
-                if (bullets[i].y < 0) {
+                if (bullets[i].x > canvas.width) {
                     bullets.splice(i, 1);
                     continue;
                 }
@@ -283,9 +283,9 @@
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     if (bullets[i] && 
                         bullets[i].x < enemies[j].x + enemies[j].width &&
-                        bullets[i].x + bullets[i].width > enemies[j].x &&
+                        bullets[i].x + bullets[i].size > enemies[j].x &&
                         bullets[i].y < enemies[j].y + enemies[j].height &&
-                        bullets[i].y + bullets[i].height > enemies[j].y) {
+                        bullets[i].y + bullets[i].size > enemies[j].y) {
                         
                         bullets.splice(i, 1);
                         enemies.splice(j, 1);
@@ -296,20 +296,26 @@
                 }
             }
 
+            // 敌人移动
             for (let i = enemies.length - 1; i >= 0; i--) {
-                enemies[i].y += enemies[i].speed;
+                enemies[i].x += enemies[i].speed * enemies[i].direction;
                 
-                if (enemies[i].y + enemies[i].height > player.y + 10) {
+                // 碰到玩家
+                if (enemies[i].x < player.x + player.width &&
+                    enemies[i].x + enemies[i].width > player.x &&
+                    enemies[i].y < player.y + player.height &&
+                    enemies[i].y + enemies[i].height > player.y) {
                     gameRunning = false;
                     alert(`游戏结束！\n最终得分: ${score}`);
                     break;
                 }
                 
-                if (enemies[i].y > canvas.height) {
+                if (enemies[i].x < -50) {
                     enemies.splice(i, 1);
                 }
             }
 
+            // 生成敌人
             frameCounter++;
             if (frameCounter % enemySpawnRate === 0) {
                 spawnEnemy();
@@ -317,12 +323,21 @@
         }
 
         function draw() {
+            // 白色背景
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
+            // 浅灰网格
             ctx.strokeStyle = '#f0f0f0';
             ctx.lineWidth = 1;
-            for (let i = 0; i < canvas.height; i += 30) {
+            for (let i = 0; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.strokeStyle = '#f5f5f5';
+                ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += 40) {
                 ctx.beginPath();
                 ctx.moveTo(0, i);
                 ctx.lineTo(canvas.width, i);
@@ -330,18 +345,18 @@
                 ctx.stroke();
             }
             
-            ctx.fillStyle = '#f8f8f8';
-            ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+            // 画玩家
+            drawStickman(player.x, player.y, player.width, player.height, player.color, true);
             
-            drawStickman(player.x, player.y - 20, player.width, player.height, player.color, true);
-            
+            // 画子弹
             bullets.forEach(bullet => {
                 ctx.fillStyle = bullet.color;
-                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+                ctx.fillRect(bullet.x, bullet.y, bullet.size, bullet.size);
             });
             
+            // 画敌人
             enemies.forEach(enemy => {
-                drawStickman(enemy.x, enemy.y - 15, enemy.width, enemy.height, enemy.color);
+                drawStickman(enemy.x, enemy.y, enemy.width, enemy.height, enemy.color);
             });
         }
 
@@ -358,7 +373,7 @@
             score = 0;
             bullets = [];
             enemies = [];
-            player.x = 300;
+            player.y = 200;
             frameCounter = 0;
             scoreElement.innerText = '0';
         }
