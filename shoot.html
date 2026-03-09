@@ -6,7 +6,7 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background: #f5f5f7;
             display: flex;
             justify-content: center;
@@ -17,90 +17,119 @@
         .game-container {
             text-align: center;
             background: white;
-            padding: 24px;
-            border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            max-width: 800px;
-            width: 100%;
+            padding: 30px;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            width: 95%;
+            margin: 20px auto;
         }
         canvas {
-            background: #ffffff;
+            background: linear-gradient(145deg, #74b9ff 0%, #a29bfe 100%);
             display: block;
             margin: 0 auto;
-            border-radius: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(0,0,0,0.05);
+            border-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             cursor: none;
             width: 100%;
             height: auto;
+            border: 3px solid white;
         }
         .info-panel {
-            margin-top: 20px;
+            margin-top: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #f8f8fa;
-            padding: 12px 24px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px 30px;
             border-radius: 60px;
-            border: 1px solid #eee;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         .score {
-            font-size: 28px;
-            font-weight: 600;
-            color: #2c3e50;
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3436;
             background: white;
-            padding: 4px 20px;
-            border-radius: 40px;
+            padding: 8px 30px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            letter-spacing: 2px;
         }
         .restart-btn {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
             color: white;
             border: none;
-            padding: 10px 30px;
-            border-radius: 40px;
-            font-size: 16px;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            border: 2px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .restart-btn:hover {
-            background: #34495e;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         .controls {
-            margin-top: 16px;
-            color: #7f8c8d;
-            font-size: 15px;
+            margin-top: 20px;
+            color: #636e72;
+            font-size: 16px;
             display: flex;
-            gap: 24px;
+            gap: 30px;
             justify-content: center;
-            background: #f8f8fa;
-            padding: 10px 20px;
-            border-radius: 40px;
+            background: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: 1px solid #dfe6e9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
         .key {
-            background: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            color: #2c3e50;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin: 0 4px;
+            background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            color: #2d3436;
+            box-shadow: 0 3px 0 #636e72;
+            margin: 0 5px;
+            border: 1px solid white;
+        }
+        .status {
+            color: #636e72;
+            font-size: 16px;
+            font-weight: 500;
+            background: rgba(255,255,255,0.5);
+            padding: 6px 20px;
+            border-radius: 30px;
+        }
+        .game-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <canvas id="gameCanvas" width="700" height="400"></canvas>
+        <div class="game-title">🔥 火柴人射手 · 横版</div>
+        
+        <canvas id="gameCanvas" width="900" height="450"></canvas>
         
         <div class="info-panel">
             <span class="score" id="scoreDisplay">0</span>
-            <span class="status">🎯 点击画面激活</span>
-            <button class="restart-btn" onclick="resetGame()">↻ 新游戏</button>
+            <span class="status">🎮 点击画面激活</span>
+            <button class="restart-btn" onclick="resetGame()">↻ 重新开始</button>
         </div>
         
         <div class="controls">
             <span><span class="key">W</span> <span class="key">S</span> 上下移动</span>
             <span><span class="key">空格</span> 射击</span>
-            <span>⚡ +10分/个</span>
+            <span>⚡ 击中敌人 +10分</span>
         </div>
     </div>
 
@@ -115,22 +144,22 @@
 
         // 玩家火柴人（站在左边）
         let player = {
-            x: 80,
-            y: 200,
-            width: 20,
-            height: 40,
-            speed: 4,
-            color: '#3b82f6'
+            x: 100,
+            y: 225,
+            width: 25,
+            height: 45,
+            speed: 5,
+            color: '#ff7675'  // 珊瑚粉色，更显眼
         };
 
         // 子弹
         let bullets = [];
-        const bulletSpeed = 7;
-        const bulletSize = 6;
+        const bulletSpeed = 8;
+        const bulletSize = 8;
 
-        // 敌人（从右边走来）
+        // 敌人
         let enemies = [];
-        const enemySpawnRate = 60;
+        const enemySpawnRate = 50;
         let frameCounter = 0;
 
         // 键盘控制
@@ -169,88 +198,93 @@
         // 射击
         function shoot() {
             bullets.push({
-                x: player.x + player.width + 5,
+                x: player.x + player.width + 10,
                 y: player.y + player.height/2 - bulletSize/2,
                 size: bulletSize,
-                color: '#e74c3c'
+                color: '#fdcb6e',  // 金色子弹
+                vx: bulletSpeed,
+                vy: 0
             });
         }
 
-        // 生成敌人
+        // 生成敌人（多种颜色）
         function spawnEnemy() {
+            const colors = ['#e17055', '#d63031', '#e84342', '#f39c12', '#e67e22'];
             enemies.push({
-                x: canvas.width - 80,
-                y: 40 + Math.random() * (canvas.height - 100),
-                width: 20,
-                height: 40,
-                color: '#2c3e50',
-                speed: 1.5 + Math.random() * 2,
-                direction: -1 // 向左走
+                x: canvas.width - 120,
+                y: 50 + Math.random() * (canvas.height - 130),
+                width: 22,
+                height: 42,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speed: 1.8 + Math.random() * 2.5,
+                direction: -1
             });
         }
 
-        // 画火柴人
+        // 画火柴人（美化版）
         function drawStickman(x, y, width, height, color, isPlayer = false) {
             ctx.save();
             ctx.translate(x + width/2, y + height/2);
             
-            // 头
+            // 头（带光泽）
             ctx.beginPath();
-            ctx.arc(0, -height/2 + 10, 9, 0, Math.PI * 2);
-            ctx.fillStyle = color;
+            ctx.arc(0, -height/2 + 12, 10, 0, Math.PI * 2);
+            
+            // 头部渐变
+            const gradient = ctx.createRadialGradient(-3, -height/2 + 8, 2, 0, -height/2 + 12, 12);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, '#2d3436');
+            ctx.fillStyle = gradient;
             ctx.fill();
-            ctx.strokeStyle = '#e0e0e0';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
             
             // 眼睛
             ctx.beginPath();
-            ctx.arc(-3, -height/2 + 7, 2, 0, Math.PI * 2);
-            ctx.arc(3, -height/2 + 7, 2, 0, Math.PI * 2);
+            ctx.arc(-4, -height/2 + 9, 2, 0, Math.PI * 2);
+            ctx.arc(4, -height/2 + 9, 2, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
             ctx.fill();
             ctx.beginPath();
-            ctx.arc(-3, -height/2 + 7, 1, 0, Math.PI * 2);
-            ctx.arc(3, -height/2 + 7, 1, 0, Math.PI * 2);
-            ctx.fillStyle = '#2c3e50';
+            ctx.arc(-4, -height/2 + 9, 1, 0, Math.PI * 2);
+            ctx.arc(4, -height/2 + 9, 1, 0, Math.PI * 2);
+            ctx.fillStyle = '#2d3436';
             ctx.fill();
             
             // 身体
             ctx.beginPath();
-            ctx.moveTo(0, -height/2 + 18);
+            ctx.moveTo(0, -height/2 + 22);
             ctx.lineTo(0, height/2 - 5);
-            ctx.strokeStyle = '#2c3e50';
-            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = '#2d3436';
+            ctx.lineWidth = 3;
             ctx.stroke();
             
             // 腿
             ctx.beginPath();
             ctx.moveTo(0, height/2 - 5);
-            ctx.lineTo(-10, height/2 + 5);
+            ctx.lineTo(-12, height/2 + 8);
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(0, height/2 - 5);
-            ctx.lineTo(10, height/2 + 5);
+            ctx.lineTo(12, height/2 + 8);
             ctx.stroke();
             
-            // 手臂
+            // 手臂（动态效果）
             ctx.beginPath();
-            ctx.moveTo(0, -5);
-            ctx.lineTo(-12, 5);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-14, 8);
             ctx.stroke();
             ctx.beginPath();
-            ctx.moveTo(0, -5);
-            ctx.lineTo(12, 5);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(14, 8);
             ctx.stroke();
             
             ctx.restore();
             
             // 玩家拿枪
             if (isPlayer) {
-                ctx.fillStyle = '#95a5a6';
-                ctx.fillRect(x + width - 2, y + height/2 - 3, 18, 6);
-                ctx.fillStyle = '#7f8c8d';
-                ctx.fillRect(x + width + 12, y + height/2 - 4, 6, 8);
+                ctx.fillStyle = '#636e72';
+                ctx.fillRect(x + width - 5, y + height/2 - 4, 25, 8);
+                ctx.fillStyle = '#2d3436';
+                ctx.fillRect(x + width + 18, y + height/2 - 6, 8, 12);
             }
         }
 
@@ -306,11 +340,11 @@
                     enemies[i].y < player.y + player.height &&
                     enemies[i].y + enemies[i].height > player.y) {
                     gameRunning = false;
-                    alert(`游戏结束！\n最终得分: ${score}`);
+                    alert(`🎮 游戏结束！\n\n最终得分: ${score}`);
                     break;
                 }
                 
-                if (enemies[i].x < -50) {
+                if (enemies[i].x < -60) {
                     enemies.splice(i, 1);
                 }
             }
@@ -323,35 +357,42 @@
         }
 
         function draw() {
-            // 白色背景
-            ctx.fillStyle = '#ffffff';
+            // 渐变背景（天空效果）
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, '#74b9ff');
+            gradient.addColorStop(0.5, '#a29bfe');
+            gradient.addColorStop(1, '#81ecec');
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 浅灰网格
-            ctx.strokeStyle = '#f0f0f0';
-            ctx.lineWidth = 1;
-            for (let i = 0; i < canvas.width; i += 40) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i, canvas.height);
-                ctx.strokeStyle = '#f5f5f5';
-                ctx.stroke();
-            }
-            for (let i = 0; i < canvas.height; i += 40) {
-                ctx.beginPath();
-                ctx.moveTo(0, i);
-                ctx.lineTo(canvas.width, i);
-                ctx.strokeStyle = '#f5f5f5';
-                ctx.stroke();
-            }
+            // 装饰云朵
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.beginPath();
+            ctx.arc(200, 80, 40, 0, Math.PI*2);
+            ctx.arc(250, 60, 35, 0, Math.PI*2);
+            ctx.arc(150, 60, 30, 0, Math.PI*2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(700, 150, 50, 0, Math.PI*2);
+            ctx.arc(750, 130, 40, 0, Math.PI*2);
+            ctx.arc(650, 130, 35, 0, Math.PI*2);
+            ctx.fill();
+            
+            // 地面
+            ctx.fillStyle = 'rgba(45, 52, 54, 0.1)';
+            ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
             
             // 画玩家
             drawStickman(player.x, player.y, player.width, player.height, player.color, true);
             
-            // 画子弹
+            // 画子弹（带拖尾效果）
             bullets.forEach(bullet => {
                 ctx.fillStyle = bullet.color;
+                ctx.shadowColor = '#fdcb6e';
+                ctx.shadowBlur = 10;
                 ctx.fillRect(bullet.x, bullet.y, bullet.size, bullet.size);
+                ctx.shadowBlur = 0;
             });
             
             // 画敌人
@@ -373,7 +414,7 @@
             score = 0;
             bullets = [];
             enemies = [];
-            player.y = 200;
+            player.y = 225;
             frameCounter = 0;
             scoreElement.innerText = '0';
         }
