@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>DMS 决策解决方案</title>
+    <!-- 图标：深灰金色 DMS 字母设计 -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232d2f36'/%3E%3Ctext x='50' y='68' text-anchor='middle' fill='%23d4af37' font-size='48' font-weight='bold' font-family='Arial, sans-serif'%3EDMS%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232d2f36'/%3E%3Ctext x='50' y='68' text-anchor='middle' fill='%23d4af37' font-size='48' font-weight='bold' font-family='Arial, sans-serif'%3EDMS%3C/text%3E%3C/svg%3E">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f2f2f6;
+            padding: 20px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+        .app-container { max-width: 500px; margin: 0 auto; }
+        
+        /* 头部 */
+        .header {
+            margin-bottom: 24px;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1c1c1e;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #2d2f36 0%, #d4af37 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header p {
+            font-size: 14px;
+            color: #8e8e93;
+            margin-top: 4px;
+        }
+        
+        /* 模块按钮区 */
+        .module-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .module-btn {
+            background: white;
+            border: none;
+            border-radius: 16px;
+            padding: 16px 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1c1e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 0 0.5px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .module-btn:active { transform: scale(0.96); background: #f8f9fc; }
+        .module-btn .emoji { font-size: 28px; }
+        .module-btn.active {
+            background: #d4af37;
+            color: #1c1c1e;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: none;
+        }
+        .card.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid #d4af37;
+            padding-left: 12px;
+        }
+        
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 15px; font-weight: 500; color: #3a3a3c; margin-bottom: 6px; }
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1px solid #e5e5ea;
+            border-radius: 12px;
+            background: #f9f9fb;
+            font-family: inherit;
+        }
+        input:focus { outline: none; border-color: #d4af37; background: white; }
+        button:not(.module-btn) {
+            background: #1c1c1e;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        button:active { transform: scale(0.97); background: #2c2c2e; }
+        .result-area {
+            margin-top: 16px;
+            padding: 14px;
+            background: #f8f9fc;
+            border-radius: 14px;
+            font-size: 15px;
+            border-left: 3px solid #d4af37;
+            color: #2c2c2e;
+            line-height: 1.4;
+        }
+        .helper-text {
+            font-size: 13px;
+            color: #8e8e93;
+            margin-top: 8px;
+            padding: 8px;
+            background: #f8f8fa;
+            border-radius: 10px;
+        }
+        .btn-secondary { background: #e5e5ea; color: #007aff; margin-top: 8px; }
+        hr { margin: 16px 0; border: none; height: 1px; background: #e5e5ea; }
+        
+        /* 博弈专用样式 */
+        .strategy-list { margin-bottom: 16px; }
+        .strategy-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .strategy-item input { flex: 1; padding: 10px 12px; }
+        .remove-strategy { background: #ff3b30; width: auto; padding: 10px 16px; margin-top: 0; }
+        .add-strategy-btn { background: #e5e5ea; color: #007aff; margin-top: 8px; }
+        .game-table-wrapper { overflow-x: auto; margin: 16px 0; }
+        .game-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 300px; }
+        .game-table th, .game-table td { border: 1px solid #e5e5ea; padding: 12px 8px; text-align: center; }
+        .game-table th { background: #f8f9fc; font-weight: 600; }
+        .payoff-input { width: 65px; padding: 8px; text-align: center; font-size: 14px; display: inline-block; }
+        .payoff-pair { display: flex; justify-content: center; gap: 4px; align-items: center; }
+        .mode-switch { display: flex; gap: 10px; margin-bottom: 16px; }
+        .mode-switch button { flex: 1; margin-top: 0; background: #e5e5ea; color: #1c1c1e; }
+        .mode-switch button.active { background: #d4af37; }
+        
+        /* 效用理论样式 */
+        .option-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+        .option-row input { flex: 1; min-width: 100px; }
+        .remove-option { background: #ff3b30; width: auto; padding: 12px 16px; margin-top: 0; }
+        .probability-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+        .probability-row span { width: 80px; font-size: 14px; }
+        .probability-row input { flex: 1; }
+        .scenario-card { background: #f9f9fb; border-radius: 14px; padding: 12px; margin-bottom: 16px; border: 1px solid #e5e5ea; }
+        .scenario-header { font-weight: 600; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .coin-area { text-align: center; margin: 20px 0; }
+        .coin {
+            width: 100px; height: 100px; background: linear-gradient(145deg, #e8c97a, #b8860b);
+            border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 48px; font-weight: bold; color: #2d2f36; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .coin-spin { animation: spin 0.5s ease-in-out 3; }
+        @keyframes spin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(720deg); } }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>DMS</h1>
+        <p>决策解决方案 · 模块化工具箱</p>
+    </div>
+    
+    <!-- 模块选择按钮 -->
+    <div class="module-buttons">
+        <button class="module-btn" data-module="ev">📊<br>预期价值</button>
+        <button class="module-btn" data-module="eighty20">⚡<br>80/20法则</button>
+        <button class="module-btn" data-module="coin">🪙<br>不确定性硬币</button>
+        <button class="module-btn" data-module="utility">🎯<br>效用理论</button>
+        <button class="module-btn" data-module="game">🎲<br>二人博弈</button>
+    </div>
+    
+    <!-- 1. 预期价值模型 -->
+    <div id="ev" class="card">
+        <div class="card-title">📊 预期价值模型</div>
+        <div class="input-group"><label>🎁 奖励</label><input type="number" id="ev_reward" value="100"></div>
+        <div class="input-group"><label>📈 奖励概率 (%)</label><input type="number" id="ev_winProb" value="60"></div>
+        <div class="input-group"><label>⚠️ 惩罚</label><input type="number" id="ev_penalty" value="100"></div>
+        <button id="calcEVBtn">计算预期价值</button>
+        <div class="result-area" id="evResult">预期价值: —</div>
+        <div class="helper-text">💡 预期价值 = (奖励×赢概率) − (惩罚×输概率)。正值值得考虑，负值建议规避。</div>
+    </div>
+    
+    <!-- 2. 80/20法则 -->
+    <div id="eighty20" class="card">
+        <div class="card-title">⚡ 80/20 法则</div>
+        <div class="helper-text" style="margin-bottom:12px;">📌 20%的关键事项通常贡献80%的价值。请找出你认为最重要的那20%事项。</div>
+        <div class="input-group"><label>🔑 关键事项（那20%是什么？）</label><input type="text" id="coreItem" placeholder="例如: 前20%的大客户"></div>
+        <div class="input-group"><label>📊 预计价值占比（0-100%）</label><input type="number" id="valueOutput" value="80" min="0" max="100"></div>
+        <button id="calc8020Btn">分析关键价值</button>
+        <div class="result-area" id="result8020">聚焦这20%的事项，将带来80%的成果。</div>
+    </div>
+    
+    <!-- 3. 不确定性硬币 -->
+    <div id="coin" class="card">
+        <div class="card-title">🪙 不确定性硬币</div>
+        <div class="input-group"><label>❓ 你的决策问题</label><input type="text" id="questionInput" placeholder="例如: 我应不应该投资这个策略？"></div>
+        <div class="coin-area"><div class="coin" id="coin">?</div><button id="flipCoinBtn">开始抛硬币</button></div>
+        <div class="result-area" id="coinResult">点击抛硬币，让随机性帮你打破僵局。</div>
+        <div class="helper-text">💡 硬币正反面概率各50%，结果仅作为打破思维僵局的参考。</div>
+    </div>
+    
+    <!-- 4. 效用理论 -->
+    <div id="utility" class="card">
+        <div class="card-title">🎯 效用理论 · 最佳决策</div>
+        <div class="helper-text" style="margin-bottom:12px;">📌 步骤：先定义结果及效用值 → 添加方案并填写概率 → 系统自动推荐最优方案</div>
+        <div style="margin-bottom:20px;"><div style="font-weight:600; margin-bottom:8px;">📋 第1步：结果及效用值</div><div id="outcomesContainer"></div><button id="addOutcomeBtn" class="btn-secondary">+ 添加结果</button></div>
+        <hr>
+        <div style="margin-bottom:20px;"><div style="font-weight:600; margin-bottom:8px;">📋 第2步：决策方案及概率</div><div id="scenariosContainer"></div><button id="addScenarioBtn" class="btn-secondary">+ 添加方案</button></div>
+        <button id="calcUtilityBtn">计算最优效用</button>
+        <div class="result-area" id="utilityResult">最优方案将显示在这里</div>
+    </div>
+    
+    <!-- 5. 二人博弈 -->
+    <div id="game" class="card">
+        <div class="card-title">🎲 二人博弈 · 收益矩阵</div>
+        <div class="helper-text" style="margin-bottom:12px;">📌 每个格子格式：(你的收益, 对手的收益)。可动态增减策略数量。</div>
+        <div class="mode-switch"><button id="nonZeroModeBtn" class="active">非零和模式</button><button id="zeroSumModeBtn">零和模式</button></div>
+        <div style="margin-bottom:16px;"><label style="font-weight:500;">🎯 你的策略</label><div id="rowStrategiesList" class="strategy-list"></div><button id="addRowStrategyBtn" class="add-strategy-btn">+ 添加你的策略</button></div>
+        <div style="margin-bottom:16px;"><label style="font-weight:500;">🤝 对手的策略</label><div id="colStrategiesList" class="strategy-list"></div><button id="addColStrategyBtn" class="add-strategy-btn">+ 添加对手策略</button></div>
+        <div id="matrixContainer" class="game-table-wrapper"></div>
+        <div class="input-group"><label>已知对方策略</label><select id="knownOpponentStrategy"><option value="">不指定（计算最优建议）</option></select></div>
+        <button id="analyzeGameBtn">分析博弈</button>
+        <div class="result-area" id="gameResult">点击分析按钮查看结果</div>
+    </div>
+</div>
+
+<script>
+    // ==================== 模块切换 ====================
+    const modules = ['ev', 'eighty20', 'coin', 'utility', 'game'];
+    function showModule(moduleId) {
+        modules.forEach(id => {
+            const card = document.getElementById(id);
+            if (card) card.classList.remove('active');
+        });
+        const activeCard = document.getElementById(moduleId);
+        if (activeCard) activeCard.classList.add('active');
+        document.querySelectorAll('.module-btn').forEach(btn => {
+            if (btn.dataset.module === moduleId) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
+    document.querySelectorAll('.module-btn').forEach(btn => {
+        btn.addEventListener('click', () => showModule(btn.dataset.module));
+    });
+    
+    // ==================== 1. 预期价值 ====================
+    document.getElementById('calcEVBtn').addEventListener('click', () => {
+        let reward = parseFloat(document.getElementById('ev_reward').value) || 0;
+        let winProb = parseFloat(document.getElementById('ev_winProb').value) || 0;
+        let penalty = parseFloat(document.getElementById('ev_penalty').value) || 0;
+        let ev = (reward * winProb / 100) - (penalty * (100 - winProb) / 100);
+        document.getElementById('evResult').innerHTML = `预期价值 = ${ev.toFixed(2)}<br>${ev > 0 ? '✅ 正向预期，值得考虑' : ev < 0 ? '⚠️ 负向预期，建议规避' : '⚖️ 中性'}`;
+    });
+    
+    // ==================== 2. 80/20 ====================
+    document.getElementById('calc8020Btn').addEventListener('click', () => {
+        let core = document.getElementById('coreItem').value.trim() || '你填写的事项';
+        let value = parseFloat(document.getElementById('valueOutput').value) || 0;
+        let insight = value >= 70 ? '✅ 这很可能是关键的20%要素，建议优先投入80%的精力。' : (value >= 40 ? '⚠️ 中等价值，可适当关注。' : '📉 价值较低，可考虑精简。');
+        document.getElementById('result8020').innerHTML = `⚡ "${core}" 预计贡献 ${value}% 的价值。<br>${insight}<br>💡 把80%精力投入到带来最大产出的20%事务上。`;
+    });
+    
+    // ==================== 3. 硬币 ====================
+    let isFlipping = false;
+    document.getElementById('flipCoinBtn').addEventListener('click', () => {
+        if (isFlipping) return;
+        let question = document.getElementById('questionInput').value.trim();
+        if (!question) { document.getElementById('coinResult').innerHTML = '❓ 请输入决策问题。'; return; }
+        isFlipping = true;
+        const coinDiv = document.getElementById('coin');
+        coinDiv.classList.add('coin-spin');
+        let spins = 0;
+        const interval = setInterval(() => {
+            coinDiv.innerText = Math.random() < 0.5 ? '是' : '否';
+            spins++;
+            if (spins >= 12) {
+                clearInterval(interval);
+                let result = Math.random() < 0.5 ? '是' : '否';
+                coinDiv.innerText = result;
+                coinDiv.classList.remove('coin-spin');
+                document.getElementById('coinResult').innerHTML = `🎲 问题：「${question}」<br>🪙 结果：<strong>${result}</strong><br>✍️ 作为决策参考。`;
+                isFlipping = false;
+            }
+        }, 60);
+    });
+    
+    // ==================== 4. 效用理论 ====================
+    let outcomes = [{ name: '苹果', utility: 5 }, { name: '梨', utility: 10 }];
+    let scenarios = [{ name: '方案A', probabilities: [50, 100] }, { name: '方案B', probabilities: [100, 20] }];
+    function renderOutcomes() {
+        const container = document.getElementById('outcomesContainer');
+        container.innerHTML = '';
+        outcomes.forEach((outcome, idx) => {
+            const div = document.createElement('div'); div.className = 'option-row';
+            div.innerHTML = `<input type="text" value="${escapeHtml(outcome.name)}" data-outcome-name="${idx}" style="flex:2;"><input type="number" value="${outcome.utility}" data-outcome-utility="${idx}" style="flex:1;"><button class="remove-option" data-outcome-remove="${idx}">删除</button>`;
+            container.appendChild(div);
+        });
+        document.querySelectorAll('[data-outcome-name]').forEach(inp => inp.addEventListener('change', e => { outcomes[parseInt(e.target.dataset.outcomeName)].name = e.target.value; renderScenarios(); }));
+        document.querySelectorAll('[data-outcome-utility]').forEach(inp => inp.addEventListener('change', e => { outcomes[parseInt(e.target.dataset.outcomeUtility)].utility = parseFloat(e.target.value) || 0; renderScenarios(); }));
+        document.querySelectorAll('[data-outcome-remove]').forEach(btn => btn.addEventListener('click', e => { outcomes.splice(parseInt(btn.dataset.outcomeRemove), 1); scenarios.forEach(s => { while(s.probabilities.length > outcomes.length) s.probabilities.pop(); while(s.probabilities.length < outcomes.length) s.probabilities.push(0); }); renderOutcomes(); renderScenarios(); }));
+    }
+    function renderScenarios() {
+        const container = document.getElementById('scenariosContainer');
+        container.innerHTML = '';
+        scenarios.forEach((scenario, sIdx) => {
+            const card = document.createElement('div'); card.className = 'scenario-card';
+            card.innerHTML = `<div class="scenario-header"><input type="text" value="${escapeHtml(scenario.name)}" data-scenario-name="${sIdx}" style="font-weight:600; flex:1;"><button class="remove-option" data-scenario-remove="${sIdx}">删除方案</button></div><div id="probs-${sIdx}"></div>`;
+            container.appendChild(card);
+            const probsDiv = document.getElementById(`probs-${sIdx}`);
+            outcomes.forEach((outcome, oIdx) => {
+                const probRow = document.createElement('div'); probRow.className = 'probability-row';
+                probRow.innerHTML = `<span>${escapeHtml(outcome.name)} 概率 (%)</span><input type="number" value="${scenario.probabilities[oIdx] || 0}" data-scenario="${sIdx}" data-outcome="${oIdx}" step="any" min="0" max="100">`;
+                probsDiv.appendChild(probRow);
+            });
+        });
+        document.querySelectorAll('[data-scenario-name]').forEach(inp => inp.addEventListener('change', e => { scenarios[parseInt(e.target.dataset.scenarioName)].name = e.target.value; }));
+        document.querySelectorAll('[data-scenario][data-outcome]').forEach(inp => inp.addEventListener('change', e => { scenarios[parseInt(e.target.dataset.scenario)].probabilities[parseInt(e.target.dataset.outcome)] = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)); }));
+        document.querySelectorAll('[data-scenario-remove]').forEach(btn => btn.addEventListener('click', e => { scenarios.splice(parseInt(btn.dataset.scenarioRemove), 1); renderScenarios(); }));
+    }
+    document.getElementById('addOutcomeBtn').addEventListener('click', () => { outcomes.push({ name: `新结果${outcomes.length+1}`, utility: 0 }); scenarios.forEach(s => s.probabilities.push(0)); renderOutcomes(); renderScenarios(); });
+    document.getElementById('addScenarioBtn').addEventListener('click', () => { scenarios.push({ name: `方案${scenarios.length+1}`, probabilities: outcomes.map(() => 0) }); renderScenarios(); });
+    document.getElementById('calcUtilityBtn').addEventListener('click', () => {
+        let results = scenarios.map((s, i) => ({ name: s.name, utility: s.probabilities.reduce((sum, p, oIdx) => sum + (p/100) * (outcomes[oIdx]?.utility || 0), 0) }));
+        if(!results.length) { document.getElementById('utilityResult').innerHTML = '请至少添加一个方案。'; return; }
+        results.sort((a,b)=>b.utility-a.utility);
+        document.getElementById('utilityResult').innerHTML = `🏆 <strong>最优方案：${escapeHtml(results[0].name)}</strong> (期望效用: ${results[0].utility.toFixed(2)})<br><br>📊 各方案：<br>${results.map(r=>`• ${escapeHtml(r.name)}: ${r.utility.toFixed(2)}`).join('<br>')}`;
+    });
+    
+    // ==================== 5. 二人博弈 ====================
+    let rowStrategies = ['策略X', '策略Y'], colStrategies = ['策略A', '策略B'], currentPayoffs = [], isZeroSum = false;
+    function initPayoffs(r,c) { let p = []; for(let i=0;i<r;i++) { p[i]=[]; for(let j=0;j<c;j++) p[i][j]=[0,0]; } return p; }
+    function syncPayoffs() { let r=rowStrategies.length, c=colStrategies.length; if(!currentPayoffs) currentPayoffs=initPayoffs(r,c); while(currentPayoffs.length>r) currentPayoffs.pop(); while(currentPayoffs.length<r) currentPayoffs.push([]); for(let i=0;i<currentPayoffs.length;i++) { while(currentPayoffs[i].length>c) currentPayoffs[i].pop(); while(currentPayoffs[i].length<c) currentPayoffs[i].push([0,0]); } }
+    function renderStrategyLists() {
+        const rowDiv = document.getElementById('rowStrategiesList'), colDiv = document.getElementById('colStrategiesList');
+        rowDiv.innerHTML = ''; rowStrategies.forEach((s,i)=> { let d=document.createElement('div'); d.className='strategy-item'; d.innerHTML=`<input type="text" value="${escapeHtml(s)}" data-row-idx="${i}"><button class="remove-strategy" data-row-remove="${i}">删除</button>`; rowDiv.appendChild(d); });
+        colDiv.innerHTML = ''; colStrategies.forEach((s,i)=> { let d=document.createElement('div'); d.className='strategy-item'; d.innerHTML=`<input type="text" value="${escapeHtml(s)}" data-col-idx="${i}"><button class="remove-strategy" data-col-remove="${i}">删除</button>`; colDiv.appendChild(d); });
+        document.querySelectorAll('[data-row-idx]').forEach(inp=>inp.addEventListener('change',e=>{rowStrategies[parseInt(e.target.dataset.rowIdx)]=e.target.value; renderMatrix(); updateOpponentSelect();}));
+        document.querySelectorAll('[data-col-idx]').forEach(inp=>inp.addEventListener('change',e=>{colStrategies[parseInt(e.target.dataset.colIdx)]=e.target.value; renderMatrix(); updateOpponentSelect();}));
+        document.querySelectorAll('[data-row-remove]').forEach(btn=>btn.addEventListener('click',e=>{rowStrategies.splice(parseInt(btn.dataset.rowRemove),1); syncPayoffs(); renderStrategyLists(); renderMatrix(); updateOpponentSelect();}));
+        document.querySelectorAll('[data-col-remove]').forEach(btn=>btn.addEventListener('click',e=>{colStrategies.splice(parseInt(btn.dataset.colRemove),1); syncPayoffs(); renderStrategyLists(); renderMatrix(); updateOpponentSelect();}));
+    }
+    function renderMatrix() {
+        let rows=rowStrategies.length, cols=colStrategies.length, container=document.getElementById('matrixContainer');
+        if(!rows||!cols){ container.innerHTML='<div class="helper-text">请添加策略</div>'; return; }
+        syncPayoffs(); let html='<table class="game-table"><thead><tr><th></th>'; for(let j=0;j<cols;j++) html+=`<th>${escapeHtml(colStrategies[j])}</th>`; html+='</tr></thead><tbody>';
+        for(let i=0;i<rows;i++){ html+=`<tr><td class="strategy-label">${escapeHtml(rowStrategies[i])}</td>`; for(let j=0;j<cols;j++){ let y=currentPayoffs[i][j][0], o=currentPayoffs[i][j][1]; html+=`<td><div class="payoff-pair"><input type="number" class="payoff-input" data-row="${i}" data-col="${j}" data-player="you" value="${y}" step="any"><span>,</span><input type="number" class="payoff-input" data-row="${i}" data-col="${j}" data-player="opp" value="${o}" step="any" ${isZeroSum?'disabled style="background:#f0f0f2;"':''}></div></td>`; } html+='</tr>'; }
+        html+='</tbody></table>'; container.innerHTML=html;
+        document.querySelectorAll('[data-player="you"]').forEach(inp=>inp.addEventListener('change',e=>{let r=parseInt(e.target.dataset.row),c=parseInt(e.target.dataset.col),v=parseFloat(e.target.value)||0; if(currentPayoffs[r]?.[c]){currentPayoffs[r][c][0]=v; if(isZeroSum){currentPayoffs[r][c][1]=-v; let opp=document.querySelector(`[data-row="${r}"][data-col="${c}"][data-player="opp"]`); if(opp) opp.value=-v; }}}));
+        if(!isZeroSum) document.querySelectorAll('[data-player="opp"]').forEach(inp=>inp.addEventListener('change',e=>{let r=parseInt(e.target.dataset.row),c=parseInt(e.target.dataset.col),v=parseFloat(e.target.value)||0; if(currentPayoffs[r]?.[c]) currentPayoffs[r][c][1]=v;}));
+    }
+    function updateOpponentSelect() { let sel=document.getElementById('knownOpponentStrategy'); sel.innerHTML='<option value="">不指定（最优建议）</option>'; for(let j=0;j<colStrategies.length;j++) sel.innerHTML+=`<option value="${j}">对手选「${escapeHtml(colStrategies[j])}」</option>`; }
+    function analyzeGame() {
+        let rows=rowStrategies.length, cols=colStrategies.length, known=document.getElementById('knownOpponentStrategy').value, res='';
+        if(known!==''){ let opp=parseInt(known), best=-Infinity, bestIdx=-1; for(let i=0;i<rows;i++) if(currentPayoffs[i][opp][0]>best){ best=currentPayoffs[i][opp][0]; bestIdx=i; } res=`📌 对手选「${escapeHtml(colStrategies[opp])}」<br>✅ 最优策略：${escapeHtml(rowStrategies[bestIdx])}<br>💰 收益：${best.toFixed(2)}`; }
+        else if(rows===2&&cols===2){ let a11=currentPayoffs[0][0][0],a12=currentPayoffs[0][1][0],a21=currentPayoffs[1][0][0],a22=currentPayoffs[1][1][0], denom=a11-a12-a21+a22, p=denom?Math.min(1,Math.max(0,(a22-a21)/denom)):0.5, q=denom?Math.min(1,Math.max(0,(a22-a12)/denom)):0.5, ev=p*q*a11+p*(1-q)*a12+(1-p)*q*a21+(1-p)*(1-q)*a22; res=`🎲 混合策略均衡<br>你的策略：${(p*100).toFixed(1)}%「${escapeHtml(rowStrategies[0])}」, ${((1-p)*100).toFixed(1)}%「${escapeHtml(rowStrategies[1])}」<br>对手策略：${(q*100).toFixed(1)}%「${escapeHtml(colStrategies[0])}」, ${((1-q)*100).toFixed(1)}%「${escapeHtml(colStrategies[1])}」<br>💰 期望收益：${ev.toFixed(2)}`; }
+        else{ let mins=[]; for(let i=0;i<rows;i++){ let m=Infinity; for(let j=0;j<cols;j++) m=Math.min(m,currentPayoffs[i][j][0]); mins.push(m); } let maxMin=Math.max(...mins), bestIdx=mins.indexOf(maxMin); res=`📌 保守策略建议（最大最小原则）<br>✅ 推荐：${escapeHtml(rowStrategies[bestIdx])}<br>💰 最坏情况收益：${maxMin.toFixed(2)}`; }
+        document.getElementById('gameResult').innerHTML = res;
+    }
+    document.getElementById('addRowStrategyBtn').addEventListener('click',()=>{ rowStrategies.push(`新策略${rowStrategies.length+1}`); syncPayoffs(); renderStrategyLists(); renderMatrix(); updateOpponentSelect(); });
+    document.getElementById('addColStrategyBtn').addEventListener('click',()=>{ colStrategies.push(`新策略${colStrategies.length+1}`); syncPayoffs(); renderStrategyLists(); renderMatrix(); updateOpponentSelect(); });
+    document.getElementById('nonZeroModeBtn').addEventListener('click',()=>{ isZeroSum=false; document.getElementById('nonZeroModeBtn').classList.add('active'); document.getElementById('zeroSumModeBtn').classList.remove('active'); renderMatrix(); });
+    document.getElementById('zeroSumModeBtn').addEventListener('click',()=>{ isZeroSum=true; document.getElementById('zeroSumModeBtn').classList.add('active'); document.getElementById('nonZeroModeBtn').classList.remove('active'); for(let i=0;i<currentPayoffs.length;i++) for(let j=0;j<currentPayoffs[i].length;j++) currentPayoffs[i][j][1] = -currentPayoffs[i][j][0]; renderMatrix(); });
+    document.getElementById('analyzeGameBtn').addEventListener('click', analyzeGame);
+    
+    function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, m=> m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
+    
+    // 初始化
+    currentPayoffs = initPayoffs(rowStrategies.length, colStrategies.length);
+    renderStrategyLists(); renderMatrix(); updateOpponentSelect();
+    renderOutcomes(); renderScenarios();
+    showModule('ev');
+</script>
+</body>
+</html>
